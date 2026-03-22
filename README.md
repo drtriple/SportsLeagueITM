@@ -65,6 +65,13 @@ dotnet add package Microsoft.Extensions.Logging.Abstractions
 2. Net 9.0
 3. SQL Server
 
+#### Iniciar API
+
+```
+cd SportsLeague.API
+dotnet run
+```
+
 ## Fase 1
 
 ### Migraciones Aplicada
@@ -126,4 +133,63 @@ Cambiar la versión de OpenApi (esto depende de la versión que se este manejand
 <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.13" />
 ↓
 <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.*" />
+```
+
+## Fase 2
+
+### Migraciones Aplicada
+```
+dotnet ef migrations add AddPlayerEntity --project SportsLeague.DataAccess --startup-project SportsLeague.API
+
+dotnet ef database update --project SportsLeague.DataAccess --startup-project SportsLeague.API
+
+dotnet ef migrations add UpdateSlnErrorPlayerEntity --project SportsLeague.DataAccess --startup-project SportsLeague.API
+
+dotnet ef database update --project SportsLeague.DataAccess --startup-project SportsLeague.API
+```
+
+### Estructura establecida
+```
+├── SportsLeague.sln
+├── SportsLeague.API/
+│ ├── Controllers/
+│ │ ├── TeamController.cs
+│ │ └── PlayerController.cs ← NUEVO
+│ ├── DTOs/
+│ │ ├── Request/
+│ │ │ ├── TeamRequestDTO.cs
+│ │ │ └── PlayerRequestDTO.cs ← NUEVO
+│ │ └── Response/
+│ │ ├── TeamResponseDTO.cs
+│ │ └── PlayerResponseDTO.cs ← NUEVO
+│ ├── Mappings/
+│ │ └── MappingProfile.cs (actualizado)
+│ ├── Middlewares/
+│ ├── Program.cs (actualizado)
+│ └── appsettings.json
+├── SportsLeague.Domain/
+│ ├── Entities/
+│ │ ├── AuditBase.cs
+│ │ ├── Team.cs (actualizado)
+│ │ └── Player.cs ← NUEVO
+│ ├── Enums/
+│ │ └── PlayerPosition.cs ← NUEVO
+│ ├── Interfaces/
+│ │ ├── Repositories/
+│ │ │ ├── IGenericRepository.cs
+│ │ │ ├── ITeamRepository.cs
+│ │ │ └── IPlayerRepository.cs ← NUEVO
+│ │ └── Services/
+│ │ ├── ITeamService.cs
+│ │ └── IPlayerService.cs ← NUEVO
+│ └── Services/
+│ ├── TeamService.cs
+│ └── PlayerService.cs ← NUEVO
+└── SportsLeague.DataAccess/
+├── Context/
+│ └── LeagueDbContext.cs (actualizado)
+├── Repositories/
+│ ├── GenericRepository.cs
+│ ├── TeamRepository.cs
+│ └── PlayerRepository.cs ← NUEVO
 ```
