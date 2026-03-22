@@ -1,6 +1,4 @@
-﻿using System.Numerics;
-
-namespace SportsLeague.Domain.Entities
+﻿namespace SportsLeague.Domain.Entities
 {
     public class Team : AuditBase
     {
@@ -9,5 +7,8 @@ namespace SportsLeague.Domain.Entities
         public string Stadium { get; set; } = string.Empty;
         public string? LogoUrl { get; set; }
         public DateTime FoundedDate { get; set; }
+
+        // Navigation Property - Colección de jugadores
+        public ICollection<Player> Players { get; set; } = new List<Player>();
     }
 }

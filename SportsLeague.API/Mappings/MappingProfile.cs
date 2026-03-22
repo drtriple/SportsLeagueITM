@@ -2,7 +2,6 @@
 using SportsLeague.API.DTOs.Request;
 using SportsLeague.API.DTOs.Response;
 using SportsLeague.Domain.Entities;
-using System.Numerics;
 
 namespace SportsLeague.API.Mappings
 {
@@ -13,6 +12,13 @@ namespace SportsLeague.API.Mappings
             // Team mappings
             CreateMap<TeamRequestDTO, Team>();
             CreateMap<Team, TeamResponseDTO>();
+
+            // Player mappings
+            CreateMap<PlayerRequestDTO, Player>();
+            CreateMap<Player, PlayerResponseDTO>()
+                .ForMember(
+                    dest => dest.TeamName,
+                    opt => opt.MapFrom(src => src.Team.Name));
         }
     }
 }
