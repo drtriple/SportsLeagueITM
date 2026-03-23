@@ -148,19 +148,16 @@ dotnet ef migrations add UpdateSlnErrorPlayerEntity --project SportsLeague.DataA
 dotnet ef database update --project SportsLeague.DataAccess --startup-project SportsLeague.API
 ```
 
-### Estructura establecida
+### Archivos Actualizados / Nuevos
 ```
 ├── SportsLeague.sln
 ├── SportsLeague.API/
 │ ├── Controllers/
-│ │ ├── TeamController.cs
 │ │ └── PlayerController.cs ← NUEVO
 │ ├── DTOs/
 │ │ ├── Request/
-│ │ │ ├── TeamRequestDTO.cs
 │ │ │ └── PlayerRequestDTO.cs ← NUEVO
 │ │ └── Response/
-│ │ ├── TeamResponseDTO.cs
 │ │ └── PlayerResponseDTO.cs ← NUEVO
 │ ├── Mappings/
 │ │ └── MappingProfile.cs (actualizado)
@@ -169,27 +166,124 @@ dotnet ef database update --project SportsLeague.DataAccess --startup-project Sp
 │ └── appsettings.json
 ├── SportsLeague.Domain/
 │ ├── Entities/
-│ │ ├── AuditBase.cs
 │ │ ├── Team.cs (actualizado)
 │ │ └── Player.cs ← NUEVO
 │ ├── Enums/
 │ │ └── PlayerPosition.cs ← NUEVO
 │ ├── Interfaces/
 │ │ ├── Repositories/
-│ │ │ ├── IGenericRepository.cs
-│ │ │ ├── ITeamRepository.cs
 │ │ │ └── IPlayerRepository.cs ← NUEVO
 │ │ └── Services/
-│ │ ├── ITeamService.cs
 │ │ └── IPlayerService.cs ← NUEVO
 │ └── Services/
-│ ├── TeamService.cs
 │ └── PlayerService.cs ← NUEVO
 └── SportsLeague.DataAccess/
 ├── Context/
 │ └── LeagueDbContext.cs (actualizado)
 ├── Repositories/
-│ ├── GenericRepository.cs
-│ ├── TeamRepository.cs
 │ └── PlayerRepository.cs ← NUEVO
+```
+
+## Fase 3
+
+### Migraciones Aplicada
+```
+dotnet ef migrations add AddReferee_Tournament_TournamentTeam --project SportsLeague.DataAccess --startup-project SportsLeague.API
+
+dotnet ef database update --project SportsLeague.DataAccess --startup-project SportsLeague.API
+
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (9ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT 1
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (6ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT OBJECT_ID(N'[__EFMigrationsHistory]');
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT 1
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT OBJECT_ID(N'[__EFMigrationsHistory]');
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (5ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT [MigrationId], [ProductVersion]
+      FROM [__EFMigrationsHistory]
+      ORDER BY [MigrationId];
+info: Microsoft.EntityFrameworkCore.Migrations[20402]
+      Applying migration '20260322232248_AddReferee_Tournament_TournamentTeam'.
+Applying migration '20260322232248_AddReferee_Tournament_TournamentTeam'.
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (14ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE TABLE [Referees] (
+          [Id] int NOT NULL IDENTITY,
+          [FirstName] nvarchar(80) NOT NULL,
+          [LastName] nvarchar(80) NOT NULL,
+          [Nationality] nvarchar(80) NOT NULL,
+          [CreatedAt] datetime2 NOT NULL,
+          [UpdatedAt] datetime2 NULL,
+          CONSTRAINT [PK_Referees] PRIMARY KEY ([Id])
+      );
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE TABLE [Tournaments] (
+          [Id] int NOT NULL IDENTITY,
+          [Name] nvarchar(150) NOT NULL,
+          [Season] nvarchar(20) NOT NULL,
+          [StartDate] datetime2 NOT NULL,
+          [EndDate] datetime2 NOT NULL,
+          [Status] int NOT NULL,
+          [CreatedAt] datetime2 NOT NULL,
+          [UpdatedAt] datetime2 NULL,
+          CONSTRAINT [PK_Tournaments] PRIMARY KEY ([Id])
+      );
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE TABLE [TournamentTeams] (
+          [Id] int NOT NULL IDENTITY,
+          [TournamentId] int NOT NULL,
+          [TeamId] int NOT NULL,
+          [RegisteredAt] datetime2 NOT NULL,
+          [CreatedAt] datetime2 NOT NULL,
+          [UpdatedAt] datetime2 NULL,
+          CONSTRAINT [PK_TournamentTeams] PRIMARY KEY ([Id]),
+          CONSTRAINT [FK_TournamentTeams_Teams_TeamId] FOREIGN KEY ([TeamId]) REFERENCES [Teams] ([Id]) ON DELETE CASCADE,
+          CONSTRAINT [FK_TournamentTeams_Tournaments_TournamentId] FOREIGN KEY ([TournamentId]) REFERENCES [Tournaments] ([Id]) ON DELETE CASCADE
+      );
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE INDEX [IX_TournamentTeams_TeamId] ON [TournamentTeams] ([TeamId]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE UNIQUE INDEX [IX_TournamentTeams_TournamentId_TeamId] ON [TournamentTeams] ([TournamentId], [TeamId]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+      VALUES (N'20260322232248_AddReferee_Tournament_TournamentTeam', N'8.0.25');
+Done.
+```
+
+### Archivos Nuevos / actualizados
+```
+SportsLeague.API/Controllers/RefereeController.cs
+SportsLeague.API/Controllers/TournamentController.cs
+SportsLeague.API/DTOs/Request/RefereeRequestDTO.cs
+SportsLeague.API/DTOs/Request/RegisterTeamDTO.cs
+SportsLeague.API/DTOs/Request/TournamentRequestDTO.cs
+SportsLeague.API/DTOs/Request/UpdateStatusDTO.cs
+SportsLeague.API/DTOs/Response/RefereeResponseDTO.cs
+SportsLeague.API/DTOs/Response/TournamentResponseDTO.cs
+SportsLeague.DataAccess/Repositories/RefereeRepository.cs
+SportsLeague.DataAccess/Repositories/TournamentRepository.cs
+SportsLeague.DataAccess/Repositories/TournamentTeamRepository.cs
+SportsLeague.Domain/Entities/Referee.cs
+SportsLeague.Domain/Entities/Tournament.cs
+SportsLeague.Domain/Entities/TournamentTeam.cs
+SportsLeague.Domain/Enums/TournamentStatus.cs
+SportsLeague.Domain/Interfaces/Repositories/IRefereeRepository.cs
+SportsLeague.Domain/Interfaces/Repositories/ITournamentRepository.cs
+SportsLeague.Domain/Interfaces/Repositories/ITournamentTeamRepository.cs
+SportsLeague.Domain/Interfaces/Services/IRefereeService.cs
+SportsLeague.Domain/Interfaces/Services/ITournamentService.cs
+SportsLeague.Domain/Services/RefereeService.cs
+SportsLeague.Domain/Services/TournamentService.cs
 ```
