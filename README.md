@@ -264,5 +264,26 @@ Done.
 
 ### Archivos Nuevos / actualizados
 ```
-
+SportsLeague.API/Controllers/RefereeController.cs
+SportsLeague.API/Controllers/TournamentController.cs
+SportsLeague.API/DTOs/Request/RefereeRequestDTO.cs
+SportsLeague.API/DTOs/Request/RegisterTeamDTO.cs
+SportsLeague.API/DTOs/Request/TournamentRequestDTO.cs
+SportsLeague.API/DTOs/Request/UpdateStatusDTO.cs
+SportsLeague.API/DTOs/Response/RefereeResponseDTO.cs
+SportsLeague.API/DTOs/Response/TournamentResponseDTO.cs
+SportsLeague.DataAccess/Repositories/RefereeRepository.cs
+SportsLeague.DataAccess/Repositories/TournamentRepository.cs
+SportsLeague.DataAccess/Repositories/TournamentTeamRepository.cs
+SportsLeague.Domain/Entities/Referee.cs
+SportsLeague.Domain/Entities/Tournament.cs
+SportsLeague.Domain/Entities/TournamentTeam.cs
+SportsLeague.Domain/Enums/TournamentStatus.cs
+SportsLeague.Domain/Interfaces/Repositories/IRefereeRepository.cs
+SportsLeague.Domain/Interfaces/Repositories/ITournamentRepository.cs
+SportsLeague.Domain/Interfaces/Repositories/ITournamentTeamRepository.cs
+SportsLeague.Domain/Interfaces/Services/IRefereeService.cs
+SportsLeague.Domain/Interfaces/Services/ITournamentService.cs
+SportsLeague.Domain/Services/RefereeService.cs
+SportsLeague.Domain/Services/TournamentService.cs
 ```
