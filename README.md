@@ -287,3 +287,119 @@ SportsLeague.Domain/Interfaces/Services/ITournamentService.cs
 SportsLeague.Domain/Services/RefereeService.cs
 SportsLeague.Domain/Services/TournamentService.cs
 ```
+
+
+## Fase 4  (Momento Evaluativo)
+
+### Migraciones Aplicada
+```
+dotnet ef migrations add AddSponsor_TournamentSponsor --project SportsLeague.DataAccess --startup-project SportsLeague.API
+
+dotnet ef database update --project SportsLeague.DataAccess --startup-project SportsLeague.API
+Build started...
+Build succeeded.
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (10ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT 1
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (12ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT OBJECT_ID(N'[__EFMigrationsHistory]');
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT 1
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT OBJECT_ID(N'[__EFMigrationsHistory]');
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (231ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT [MigrationId], [ProductVersion]
+      FROM [__EFMigrationsHistory]
+      ORDER BY [MigrationId];
+info: Microsoft.EntityFrameworkCore.Migrations[20402]
+      Applying migration '20260406001855_AddSponsor_TournamentSponsor'.
+Applying migration '20260406001855_AddSponsor_TournamentSponsor'.
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (72ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE TABLE [Sponsors] (
+          [Id] int NOT NULL IDENTITY,
+          [Name] nvarchar(150) NOT NULL,
+          [ContactEmail] nvarchar(200) NOT NULL,
+          [Phone] nvarchar(30) NULL,
+          [WebsiteUrl] nvarchar(500) NULL,
+          [Category] int NOT NULL,
+          [CreatedAt] datetime2 NOT NULL,
+          [UpdatedAt] datetime2 NULL,
+          CONSTRAINT [PK_Sponsors] PRIMARY KEY ([Id])
+      );
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (11ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE TABLE [TournamentSponsors] (
+          [Id] int NOT NULL IDENTITY,
+          [TournamentId] int NOT NULL,
+          [SponsorId] int NOT NULL,
+          [ContractAmount] decimal(18,2) NOT NULL,
+          [JoinedAt] datetime2 NOT NULL,
+          [CreatedAt] datetime2 NOT NULL,
+          [UpdatedAt] datetime2 NULL,
+          CONSTRAINT [PK_TournamentSponsors] PRIMARY KEY ([Id]),
+          CONSTRAINT [FK_TournamentSponsors_Sponsors_SponsorId] FOREIGN KEY ([SponsorId]) REFERENCES [Sponsors] ([Id]) ON DELETE CASCADE,
+          CONSTRAINT [FK_TournamentSponsors_Tournaments_TournamentId] FOREIGN KEY ([TournamentId]) REFERENCES [Tournaments] ([Id]) ON DELETE CASCADE
+      );
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (20ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE UNIQUE INDEX [IX_Sponsors_Name] ON [Sponsors] ([Name]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE INDEX [IX_TournamentSponsors_SponsorId] ON [TournamentSponsors] ([SponsorId]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE UNIQUE INDEX [IX_TournamentSponsors_TournamentId_SponsorId] ON [TournamentSponsors] ([TournamentId], [SponsorId]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (9ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+      VALUES (N'20260406001855_AddSponsor_TournamentSponsor', N'8.0.25');
+Done.
+```
+
+### Archivos Nuevos / actualizados
+
+```
+SportsLeague.Domain/ 
+  Entities/ 
+    Sponsor.cs                          // NUEVO 
+    TournamentSponsor.cs                // NUEVO 
+  Enums/ 
+    SponsorCategory.cs                  // NUEVO 
+  Interfaces/ 
+    Repositories/ 
+      ISponsorRepository.cs             // NUEVO 
+      ITournamentSponsorRepository.cs   // NUEVO 
+    Services/ 
+      ISponsorService.cs                // NUEVO 
+  
+SportsLeague.DataAccess/ 
+  Repositories/ 
+    SponsorRepository.cs               // NUEVO 
+    TournamentSponsorRepository.cs     // NUEVO 
+  Migrations/ 
+    xxx_AddSponsor_TournamentSponsor.cs // NUEVO 
+  
+SportsLeague.API/ 
+  DTOs/ 
+    Request/ 
+      SponsorRequestDTO.cs             // NUEVO 
+      TournamentSponsorRequestDTO.cs   // NUEVO 
+    Response/ 
+      SponsorResponseDTO.cs            // NUEVO 
+      TournamentSponsorResponseDTO.cs  // NUEVO 
+  Services/ 
+    SponsorService.cs                  // NUEVO 
+  Controllers/ 
+    SponsorController.cs               // NUEVO 
+  
+Archivos MODIFICADOS: 
+  Domain/Entities/Tournament.cs        // Agregar ICollection<TournamentSponsor> 
+  DataAccess/Context/LeagueDbContext.cs // Agregar DbSets y config 
+  API/Mapping/MappingProfile.cs        // Agregar mapeos 
+  API/Program.cs                       // Registrar services y repos 
+```
