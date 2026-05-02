@@ -34,16 +34,29 @@ namespace SportsLeague.API.Mappings
                 src.TournamentTeams != null ? src.TournamentTeams.Count : 0));
 
 
-            // Sponsor mappings (NUEVO)
+            // Sponsor mappings
             CreateMap<SponsorRequestDTO, Sponsor>();
             CreateMap<Sponsor, SponsorResponseDTO>();
 
-            // TournamentSponsor mappings (NUEVO)
+            // TournamentSponsor mappings
             CreateMap<TournamentSponsor, TournamentSponsorResponseDTO>()
                 .ForMember(dest => dest.TournamentName,
                     opt => opt.MapFrom(src => src.Tournament != null ? src.Tournament.Name : string.Empty))
                 .ForMember(dest => dest.SponsorName,
                     opt => opt.MapFrom(src => src.Sponsor != null ? src.Sponsor.Name : string.Empty));
+
+            // Match mappings
+            CreateMap<MatchRequestDTO, Match>();
+            CreateMap<Match, MatchResponseDTO>()
+                .ForMember(dest => dest.TournamentName,
+                    opt => opt.MapFrom(src => src.Tournament.Name))
+                .ForMember(dest => dest.HomeTeamName,
+                    opt => opt.MapFrom(src => src.HomeTeam.Name))
+                .ForMember(dest => dest.AwayTeamName,
+                    opt => opt.MapFrom(src => src.AwayTeam.Name))
+                .ForMember(dest => dest.RefereeFullName,
+                    opt => opt.MapFrom(src =>
+                        src.Referee.FirstName + " " + src.Referee.LastName));
 
         }
     }

@@ -31,6 +31,7 @@ namespace SportsLeague.DataAccess.Repositories
             return await _dbSet
                 .Where(ts => ts.SponsorId == sponsorId)
                 .Include(ts => ts.Tournament)
+                .Include(ts => ts.Sponsor)
                 .ToListAsync();
         }
 
