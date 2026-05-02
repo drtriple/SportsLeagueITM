@@ -403,3 +403,78 @@ Archivos MODIFICADOS:
   API/Mapping/MappingProfile.cs        // Agregar mapeos 
   API/Program.cs                       // Registrar services y repos 
 ```
+
+
+
+## Fase 4.1
+
+### Migraciones Aplicada
+```
+dotnet ef migrations add AddMatchEntity --project SportsLeague.DataAccess --startup-project SportsLeague.API 
+dotnet ef database update --project SportsLeague.DataAccess --startup-project SportsLeague.API 
+
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (10ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT 1
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (13ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT OBJECT_ID(N'[__EFMigrationsHistory]');
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT 1
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT OBJECT_ID(N'[__EFMigrationsHistory]');
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (210ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT [MigrationId], [ProductVersion]
+      FROM [__EFMigrationsHistory]
+      ORDER BY [MigrationId];
+info: Microsoft.EntityFrameworkCore.Migrations[20402]
+      Applying migration '20260502022644_AddMatchEntity'.
+Applying migration '20260502022644_AddMatchEntity'.
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (65ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE TABLE [Matches] (
+          [Id] int NOT NULL IDENTITY,
+          [TournamentId] int NOT NULL,
+          [HomeTeamId] int NOT NULL,
+          [AwayTeamId] int NOT NULL,
+          [RefereeId] int NOT NULL,
+          [MatchDate] datetime2 NOT NULL,
+          [Venue] nvarchar(150) NOT NULL,
+          [Matchday] int NOT NULL,
+          [Status] int NOT NULL,
+          [CreatedAt] datetime2 NOT NULL,
+          [UpdatedAt] datetime2 NULL,
+          CONSTRAINT [PK_Matches] PRIMARY KEY ([Id]),
+          CONSTRAINT [FK_Matches_Referees_RefereeId] FOREIGN KEY ([RefereeId]) REFERENCES [Referees] ([Id]) ON DELETE NO ACTION,
+          CONSTRAINT [FK_Matches_Teams_AwayTeamId] FOREIGN KEY ([AwayTeamId]) REFERENCES [Teams] ([Id]) ON DELETE NO ACTION,
+          CONSTRAINT [FK_Matches_Teams_HomeTeamId] FOREIGN KEY ([HomeTeamId]) REFERENCES [Teams] ([Id]) ON DELETE NO ACTION,
+          CONSTRAINT [FK_Matches_Tournaments_TournamentId] FOREIGN KEY ([TournamentId]) REFERENCES [Tournaments] ([Id]) ON DELETE CASCADE
+      );
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (27ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE INDEX [IX_Matches_AwayTeamId] ON [Matches] ([AwayTeamId]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE INDEX [IX_Matches_HomeTeamId] ON [Matches] ([HomeTeamId]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE INDEX [IX_Matches_RefereeId] ON [Matches] ([RefereeId]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE INDEX [IX_Matches_TournamentId] ON [Matches] ([TournamentId]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (9ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+      VALUES (N'20260502022644_AddMatchEntity', N'8.0.25');
+Done.
+```
+
+Nota: se modifica el archivo SportsLeague.DataAccess\Repositories\TournamentSponsorRepository.cs para solucionar el error al momento de consultar los sponsors de un torneo.
+
+### DataSeeder
+```
+SportsLeague.DataAccess\Seeders\DataSeeder.cs
+```

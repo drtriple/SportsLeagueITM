@@ -8,8 +8,14 @@
         public string? LogoUrl { get; set; }
         public DateTime FoundedDate { get; set; }
 
-        // Navigation Property - Colección de jugadores
+        // Navigation Property - Player Collection
         public ICollection<Player> Players { get; set; } = new List<Player>();
         public ICollection<TournamentTeam> TournamentTeams { get; set; } = new List<TournamentTeam>();
+
+        // Home games
+        public ICollection<Match> HomeMatches { get; set; } = new List<Match>();
+
+        // Away games
+        public ICollection<Match> AwayMatches { get; set; } = new List<Match>();
     }
 }
