@@ -478,3 +478,93 @@ Nota: se modifica el archivo SportsLeague.DataAccess\Repositories\TournamentSpon
 ```
 SportsLeague.DataAccess\Seeders\DataSeeder.cs
 ```
+
+
+## Fase 5
+
+### Migraciones Aplicada
+```
+dotnet ef migrations add AddMatchResult_Goal_Card --project SportsLeague.DataAccess --startup-project SportsLeague.API 
+dotnet ef database update --project SportsLeague.DataAccess --startup-project SportsLeague.API 
+
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (9ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT 1
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (6ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT OBJECT_ID(N'[__EFMigrationsHistory]');
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT 1
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT OBJECT_ID(N'[__EFMigrationsHistory]');
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (28ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT [MigrationId], [ProductVersion]
+      FROM [__EFMigrationsHistory]
+      ORDER BY [MigrationId];
+info: Microsoft.EntityFrameworkCore.Migrations[20402]
+      Applying migration '20260503014455_AddMatchResult_Goal_Card'.
+Applying migration '20260503014455_AddMatchResult_Goal_Card'.
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (11ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE TABLE [Cards] (
+          [Id] int NOT NULL IDENTITY,
+          [MatchId] int NOT NULL,
+          [PlayerId] int NOT NULL,
+          [Minute] int NOT NULL,
+          [Type] int NOT NULL,
+          [CreatedAt] datetime2 NOT NULL,
+          [UpdatedAt] datetime2 NULL,
+          CONSTRAINT [PK_Cards] PRIMARY KEY ([Id]),
+          CONSTRAINT [FK_Cards_Matches_MatchId] FOREIGN KEY ([MatchId]) REFERENCES [Matches] ([Id]) ON DELETE CASCADE,
+          CONSTRAINT [FK_Cards_Players_PlayerId] FOREIGN KEY ([PlayerId]) REFERENCES [Players] ([Id]) ON DELETE NO ACTION
+      );
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE TABLE [Goals] (
+          [Id] int NOT NULL IDENTITY,
+          [MatchId] int NOT NULL,
+          [PlayerId] int NOT NULL,
+          [Minute] int NOT NULL,
+          [Type] int NOT NULL,
+          [CreatedAt] datetime2 NOT NULL,
+          [UpdatedAt] datetime2 NULL,
+          CONSTRAINT [PK_Goals] PRIMARY KEY ([Id]),
+          CONSTRAINT [FK_Goals_Matches_MatchId] FOREIGN KEY ([MatchId]) REFERENCES [Matches] ([Id]) ON DELETE CASCADE,
+          CONSTRAINT [FK_Goals_Players_PlayerId] FOREIGN KEY ([PlayerId]) REFERENCES [Players] ([Id]) ON DELETE NO ACTION
+      );
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE TABLE [MatchResults] (
+          [Id] int NOT NULL IDENTITY,
+          [MatchId] int NOT NULL,
+          [HomeGoals] int NOT NULL,
+          [AwayGoals] int NOT NULL,
+          [Observations] nvarchar(500) NULL,
+          [CreatedAt] datetime2 NOT NULL,
+          [UpdatedAt] datetime2 NULL,
+          CONSTRAINT [PK_MatchResults] PRIMARY KEY ([Id]),
+          CONSTRAINT [FK_MatchResults_Matches_MatchId] FOREIGN KEY ([MatchId]) REFERENCES [Matches] ([Id]) ON DELETE CASCADE
+      );
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE INDEX [IX_Cards_MatchId] ON [Cards] ([MatchId]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE INDEX [IX_Cards_PlayerId] ON [Cards] ([PlayerId]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE INDEX [IX_Goals_MatchId] ON [Goals] ([MatchId]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE INDEX [IX_Goals_PlayerId] ON [Goals] ([PlayerId]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE UNIQUE INDEX [IX_MatchResults_MatchId] ON [MatchResults] ([MatchId]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+      VALUES (N'20260503014455_AddMatchResult_Goal_Card', N'8.0.25');
+```
