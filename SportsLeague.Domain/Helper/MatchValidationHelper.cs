@@ -25,9 +25,13 @@ namespace SportsLeague.Domain.Helper
                 throw new KeyNotFoundException(
                     $"No se encontró el partido con ID {matchId}");
 
-            if (match.Status != MatchStatus.InProgress && match.Status != MatchStatus.Finished)
+            //if (match.Status != MatchStatus.InProgress && match.Status != MatchStatus.Finished)
+            //    throw new InvalidOperationException(
+            //        "Solo se pueden registrar eventos en partidos InProgress o Finished");
+
+            if (match.Status != MatchStatus.InProgress)
                 throw new InvalidOperationException(
-                    "Solo se pueden registrar eventos en partidos InProgress o Finished");
+                    "Solo se pueden registrar eventos en partidos InProgress");
 
             return match;
         }

@@ -479,7 +479,6 @@ Nota: se modifica el archivo SportsLeague.DataAccess\Repositories\TournamentSpon
 SportsLeague.DataAccess\Seeders\DataSeeder.cs
 ```
 
-
 ## Fase 5
 
 ### Migraciones Aplicada
@@ -567,4 +566,20 @@ info: Microsoft.EntityFrameworkCore.Database.Command[20101]
       Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
       INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
       VALUES (N'20260503014455_AddMatchResult_Goal_Card', N'8.0.25');
+```
+
+## Fase 6
+
+### Archivos Modificados/Nuevos
+```
+API/DTOs/Response/StandingDTO.cs 
+API/DTOs/Response/TopScorerDTO.cs
+API/DTOs/Response/CardStatsDTO.cs
+API/Controllers/StandingsController.cs
+Domain/Interfaces/Services/IStandingsService.cs
+Domain/Services/StandingsService.cs
+API/Program.cs
+Domain/Helpe/MatchValidationHelper.cs -> se modifica que solo se puedan agregar tarjetas y goles en partidos en proceso
+DataAccess/Repositories/GoalRepository.cs -> Al consultar <api/stats/scorers?tournamentId=1> el teamName venía "N/A" se debía a que faltaba: ThenInclude(p => p.Team)
+DataAccess/Repositories/CardRepository.cs -> Al consultar <api/stats/cards?tournamentId=1> el teamName venía "N/A" se debía a que faltaba: ThenInclude(p => p.Team)
 ```
