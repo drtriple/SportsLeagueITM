@@ -583,3 +583,74 @@ Domain/Helpe/MatchValidationHelper.cs -> se modifica que solo se puedan agregar 
 DataAccess/Repositories/GoalRepository.cs -> Al consultar <api/stats/scorers?tournamentId=1> el teamName venía "N/A" se debía a que faltaba: ThenInclude(p => p.Team)
 DataAccess/Repositories/CardRepository.cs -> Al consultar <api/stats/cards?tournamentId=1> el teamName venía "N/A" se debía a que faltaba: ThenInclude(p => p.Team)
 ```
+
+
+## Momento evaluativo 4
+
+### Archivos Modificados/Nuevos
+```
+SportsLeague.Domain\Entities\MatchLineup.cs
+SportsLeague.Domain\Interfaces\Repositories\IMatchLineupRepository.cs
+SportsLeague.Domain\Interfaces\Services\IMatchLineupService.cs
+SportsLeague.Domain\Services\MatchLineupService.cs
+SportsLeague.DataAccess\Repositories\MatchLineupRepository.cs
+SportsLeague.API\DTOs\Request\CreateMatchLineupDTO.cs
+SportsLeague.API\DTOs\Response\MatchLineupDTO.cs
+SportsLeague.API\Mappings\MappingProfile.cs
+SportsLeague.API\Controllers\MatchController.cs
+SportsLeague.DataAccess\Context\LeagueDbContext.cs
+SportsLeague.Domain\Entities\Match.cs
+SportsLeague.API\Program.cs
+SportsLeague.Domain\Helper\MatchValidationHelper.cs
+```
+
+### Migraciones Aplicada
+```
+dotnet ef migrations add AddMatchLineup --project SportsLeague.DataAccess --startup-project SportsLeague.API 
+dotnet ef database update --project SportsLeague.DataAccess --startup-project SportsLeague.API 
+
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (9ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT 1
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (7ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT OBJECT_ID(N'[__EFMigrationsHistory]');
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT 1
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT OBJECT_ID(N'[__EFMigrationsHistory]');
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (20ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT [MigrationId], [ProductVersion]
+      FROM [__EFMigrationsHistory]
+      ORDER BY [MigrationId];
+info: Microsoft.EntityFrameworkCore.Migrations[20402]
+      Applying migration '20260518212913_AddMatchLineup'.
+Applying migration '20260518212913_AddMatchLineup'.
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (23ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE TABLE [MatchLineups] (
+          [Id] int NOT NULL IDENTITY,
+          [MatchId] int NOT NULL,
+          [PlayerId] int NOT NULL,
+          [IsStarter] bit NOT NULL,
+          [Position] nvarchar(10) NOT NULL,
+          [CreatedAt] datetime2 NOT NULL,
+          [UpdatedAt] datetime2 NULL,
+          CONSTRAINT [PK_MatchLineups] PRIMARY KEY ([Id]),
+          CONSTRAINT [FK_MatchLineups_Matches_MatchId] FOREIGN KEY ([MatchId]) REFERENCES [Matches] ([Id]) ON DELETE CASCADE,
+          CONSTRAINT [FK_MatchLineups_Players_PlayerId] FOREIGN KEY ([PlayerId]) REFERENCES [Players] ([Id]) ON DELETE NO ACTION
+      );
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE UNIQUE INDEX [IX_MatchLineups_MatchId_PlayerId] ON [MatchLineups] ([MatchId], [PlayerId]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      CREATE INDEX [IX_MatchLineups_PlayerId] ON [MatchLineups] ([PlayerId]);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+      VALUES (N'20260518212913_AddMatchLineup', N'8.0.25');
+```

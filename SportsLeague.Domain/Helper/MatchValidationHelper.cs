@@ -36,6 +36,22 @@ namespace SportsLeague.Domain.Helper
             return match;
         }
 
+        // Valida que el partido existe y está en estado Scheduled.
+        public async Task<Match> ValidateMatchForLineupAsync(int matchId)
+        {
+            var match = await _matchRepository.GetByIdAsync(matchId);
+
+            if (match == null)
+                throw new KeyNotFoundException(
+                    $"No se encontró el partido con ID {matchId}");
+
+            if (match.Status != MatchStatus.Scheduled)
+                throw new InvalidOperationException(
+                    "Solo se pueden registrar alineaciones en partidos Scheduled");
+
+            return match;
+        }
+
         public async Task<Player> ValidatePlayerInMatchAsync(int playerId, Match match)
         {
             var player = await _playerRepository.GetByIdAsync(playerId);
